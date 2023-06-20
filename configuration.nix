@@ -69,6 +69,7 @@
       keybindings = {
         "ctrl+c" = "copy_to_clipboard";
         "ctrl+v" = "paste_from_clipboard";
+        "ctrl+shift+c" = "copy_or_interrupt";
       };
       extraConfig = ''
         foreground            #E5E9F0
