@@ -1,7 +1,6 @@
 local o = vim.opt
 local g = vim.g
 local map = vim.api.nvim_set_keymap
-local opts = { silent = true, noremap = true }
 
 require('onenord').setup()
 g.loaded_netrw = 1
@@ -40,6 +39,7 @@ o.splitright = true
 o.splitbelow = true
 o.completeopt = "menuone,noselect"
 o.smartcase = true
+o.updatetime = 600
 
 local builtin = require("telescope.builtin")
 
@@ -48,6 +48,27 @@ map("n", "<C-n>", ":NvimTreeFocus<CR>", {})
 vim.keymap.set("n", "<C-p>", builtin.find_files, {})
 vim.keymap.set("n", "<C-f>", builtin.live_grep, {})
 vim.keymap.set("n", "<C-h>", builtin.buffers, {})
+
+vim.api.nvim_create_autocmd('LspAttach', {
+  group = vim.api.nvim_create_augroup('UserLspConfig', {}),
+  callback = function(ev)
+    vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
+
+    local opts = { buffer = ev.buf }
+    vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
+    vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
+    vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
+    vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
+    vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
+    vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, opts)
+    vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, opts)
+    vim.keymap.set({ 'n', 'v' }, '<space>ca', vim.lsp.buf.code_action, opts)
+    vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
+    vim.keymap.set('n', '<space>f', function()
+      vim.lsp.buf.format { async = true }
+    end, opts)
+  end,
+})
 
 require('nvim-treesitter.configs').setup {
   highlight = {
@@ -122,18 +143,14 @@ require('lspconfig').lua_ls.setup {
   settings = {
     Lua = {
       runtime = {
-        -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
         version = 'LuaJIT',
       },
       diagnostics = {
-        -- Get the language server to recognize the `vim` global
         globals = { 'vim' },
       },
       workspace = {
-        -- Make the server aware of Neovim runtime files
         library = vim.api.nvim_get_runtime_file("", true),
       },
-      -- Do not send telemetry data containing a randomized but unique identifier
       telemetry = {
         enable = false,
       },
@@ -141,5 +158,13 @@ require('lspconfig').lua_ls.setup {
   },
 }
 
--- Format
 vim.cmd [[autocmd BufWritePre <buffer> lua vim.lsp.buf.format()]]
+
+vim.diagnostic.config({
+  update_in_insert = true,
+  virtual_text = true,
+  signs = true,
+  float = { border = "single" },
+})
+
+vim.cmd([[au CursorHold * lua vim.diagnostic.open_float(0,{scope = "line"})]])

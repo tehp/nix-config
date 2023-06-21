@@ -82,6 +82,7 @@
         "ctrl+shift+c" = "copy_or_interrupt";
       };
       theme = "Nord";
+      font.name = "Hack";
     };
 
     programs.i3status = {
@@ -153,6 +154,10 @@
     ckb-next
     pavucontrol
     steam
+  ];
+
+  fonts.fonts = with pkgs; [
+    (nerdfonts.override { fonts = [ "Hack" ]; })
   ];
 
   programs.steam = {
