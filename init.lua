@@ -43,6 +43,8 @@ o.updatetime = 600
 
 local builtin = require("telescope.builtin")
 
+require('Comment').setup()
+
 map("n", "<C-n>", ":NvimTreeFocus<CR>", {})
 
 vim.keymap.set("n", "<C-p>", builtin.find_files, {})
@@ -139,6 +141,7 @@ local capabilities = require('cmp_nvim_lsp').default_capabilities()
 require('lspconfig').rust_analyzer.setup { capabilities = capabilities }
 require('lspconfig').rnix.setup { capabilities = capabilities }
 require('lspconfig').zk.setup { capabilities = capabilities }
+require('lspconfig').tsserver.setup { capabilities = capabilities }
 require('lspconfig').lua_ls.setup {
   settings = {
     Lua = {

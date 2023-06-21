@@ -42,6 +42,9 @@
       neofetch
       gh
       lua-language-server
+      nodejs
+      nodePackages.pnpm
+      nodePackages.typescript-language-server
     ];
 
     programs.git = {

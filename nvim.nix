@@ -28,6 +28,7 @@
         telescope-nvim
         vim-vsnip
         nvim-tree-lua
+        comment-nvim
 
         # nvim-cmp
         nvim-cmp
