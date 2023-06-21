@@ -4,6 +4,7 @@
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
     <home-manager/nixos>
+    ./nvim.nix
   ];
 
   # nixos-config path required for custom config location
@@ -17,7 +18,6 @@
   home-manager.users.tehp = { pkgs, ... }: {
 
     home.file.".config/i3/config".source = ./i3config;
-    home.file.".config/nvim/init.lua".source = ./init.lua;
 
     home.packages = with pkgs; [
       kitty
@@ -41,6 +41,7 @@
       killall
       neofetch
       gh
+      lua-language-server
     ];
 
     programs.git = {
@@ -83,47 +84,34 @@
       theme = "Nord";
     };
 
-    programs.neovim = {
+    programs.i3status = {
       enable = true;
-      defaultEditor = true;
-      plugins = with pkgs.vimPlugins; [
-        vim-nix
-        nvim-lspconfig
-        nvim-treesitter
-        nvim-cmp
-        cmp-nvim-lsp
-        lsp-zero-nvim
-        plenary-nvim
-        onenord-nvim
-        vim-sleuth
-        gitsigns-nvim
-        nvim-navic
-        indent-blankline-nvim
-        auto-pairs
-        nvim-web-devicons
-        lualine-nvim
-        telescope-nvim
-        nvim-tree-lua
-      ];
+      general = {
+        colors = true;
+        color_good = "#e0e0e0";
+        color_degraded = "#d7ae00";
+        color_bad = "#f69d6a";
+        interval = 1;
+      };
     };
 
     home.stateVersion = "23.05";
   };
 
   programs.zsh.enable = true;
-  users.extraUsers.tehp = { shell = pkgs.zsh; extraGroups = [ "audio" ]; };
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
   boot.initrd.kernelModules = [ "amdgpu" ];
-  services.xserver.enable = true;
-  services.xserver.videoDrivers = [ "amdgpu" ];
-
   environment.pathsToLink = [ "/libexec" ];
 
   services.xserver = {
+    enable = true;
+    videoDrivers = [ "amdgpu" ];
+    layout = "us";
+    xkbVariant = "";
     desktopManager = { xterm.enable = false; };
     displayManager = { defaultSession = "none+i3"; };
     windowManager.i3 = {
@@ -131,6 +119,9 @@
       enable = true;
       extraPackages = with pkgs; [ dmenu i3status i3lock i3blocks ];
     };
+    displayManager.setupCommands = ''
+      ${pkgs.xorg.xrandr}/bin/xrandr --output DisplayPort-2 --mode 5120x1440 --primary --rate 239.76 --pos 0x1080 --rotate normal --output HDMI-A-0 --mode 1920x1080 --pos 1440x0 --rotate normal
+    '';
   };
 
   networking.hostName = "nixos";
@@ -139,15 +130,11 @@
   time.timeZone = "America/Vancouver";
   i18n.defaultLocale = "en_CA.UTF-8";
 
-  services.xserver = {
-    layout = "us";
-    xkbVariant = "";
-  };
-
   users.users.tehp = {
     isNormalUser = true;
+    shell = pkgs.zsh;
     description = "tehp";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "audio" ];
     packages = with pkgs; [ ];
   };
 
@@ -165,11 +152,16 @@
     spotify
     ckb-next
     pavucontrol
+    steam
   ];
 
-  hardware.ckb-next.enable = true;
+  programs.steam = {
+    enable = true;
+    # remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
+    dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
+  };
 
-  # sound
+  hardware.ckb-next.enable = true;
   hardware.pulseaudio.enable = true;
 
   # Don't change if you don't know what you are doing
