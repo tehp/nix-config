@@ -29,6 +29,7 @@
         vim-vsnip
         nvim-tree-lua
         comment-nvim
+        null-ls-nvim
 
         # nvim-cmp
         nvim-cmp

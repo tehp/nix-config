@@ -45,6 +45,9 @@
       nodejs
       nodePackages.pnpm
       nodePackages.typescript-language-server
+      nodePackages.eslint
+      nodePackages.vscode-langservers-extracted
+      nodePackages.prettier
     ];
 
     programs.git = {

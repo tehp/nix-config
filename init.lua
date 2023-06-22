@@ -136,7 +136,7 @@ cmp.setup.cmdline(':', {
   })
 })
 
--- Set up lspconfig.
+local null_ls = require("null-ls")
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
 require('lspconfig').rust_analyzer.setup { capabilities = capabilities }
 require('lspconfig').rnix.setup { capabilities = capabilities }
@@ -160,6 +160,13 @@ require('lspconfig').lua_ls.setup {
     },
   },
 }
+null_ls.setup({
+  capabilities = capabilities,
+  sources = {
+    null_ls.builtins.diagnostics.eslint,
+    null_ls.builtins.completion.spell,
+  }
+})
 
 vim.cmd [[autocmd BufWritePre <buffer> lua vim.lsp.buf.format()]]
 
