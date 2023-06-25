@@ -42,6 +42,8 @@
       neofetch
       gh
       lua-language-server
+      libnotify
+      heroku
       nodejs
       nodePackages.pnpm
       nodePackages.typescript-language-server
@@ -129,6 +131,14 @@
     displayManager.setupCommands = ''
       ${pkgs.xorg.xrandr}/bin/xrandr --output DisplayPort-2 --mode 5120x1440 --primary --rate 239.76 --pos 0x1080 --rotate normal --output HDMI-A-0 --mode 1920x1080 --pos 1440x0 --rotate normal
     '';
+    xautolock = {
+      enable = true;
+      locker = "${pkgs.i3lock}/bin/i3lock --color 000000";
+      time = 15; # minutes
+      enableNotifier = true;
+      notify = 30; # seconds before lock
+      notifier = "${pkgs.libnotify}/bin/notify-send 'Locking in 30 seconds'";
+    };
   };
 
   networking.hostName = "nixos";

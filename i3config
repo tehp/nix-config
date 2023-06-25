@@ -187,7 +187,7 @@ bar {
 for_window [class=".*"] border pixel 3
 gaps inner 5
 gaps outer 0
-# smart_gaps on
+smart_gaps on
 hide_edge_borders both
 
 # alt-tab like behavior
